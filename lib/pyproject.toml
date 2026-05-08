@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "research-utils"
+version = "0.1.0"
+description = "Reusable OCR pipeline utilities for ancient Chinese document annotation"
+dependencies = [
+    "paddleocr",
+    "paddlepaddle",
+    "opencv-python",
+    "numpy",
+    "Pillow",
+    "dashscope",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["research_utils*"]
