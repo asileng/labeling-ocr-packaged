@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古籍 OCR 字符检测实验 Sandbox</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  :root {
+    --bg: #1a1a1a; --panel: #242424; --border: #333;
+    --text: #e5e5e5; --dim: #999; --accent: #3b82f6;
+    --green: #22c55e; --red: #ef4444; --yellow: #eab308;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  .header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header .badge { font-size: 12px; background: var(--accent); padding: 2px 8px; border-radius: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--panel); }
+  .tab { padding: 12px 24px; cursor: pointer; font-size: 14px; color: var(--dim); border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .content { padding: 24px; max-width: 1400px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; margin-bottom: 12px; color: var(--text); }
+  .card .meta { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--dim); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { color: var(--text); }
+  .status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .status.ok { background: var(--green); }
+  .status.warn { background: var(--yellow); }
+  .status.err { background: var(--red); }
+  .status.pending { background: var(--dim); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .stat .label { font-size: 12px; color: var(--dim); margin-bottom: 4px; }
+  .stat .value { font-size: 28px; font-weight: 600; }
+  .stat .unit { font-size: 14px; color: var(--dim); margin-left: 4px; }
+  .chart-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .chart-box h3 { font-size: 15px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .gallery img { width: 100%; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s; }
+  .gallery img:hover { transform: scale(1.02); }
+  .gallery .caption { font-size: 11px; color: var(--dim); margin-top: 4px; text-align: center; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--dim); }
+  .empty p { margin-top: 8px; font-size: 13px; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); cursor: pointer; font-size: 13px; }
+  .btn:hover { border-color: var(--accent); }
+  .toolbar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+  .toolbar .info { font-size: 12px; color: var(--dim); margin-left: auto; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal-overlay img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>古籍 OCR 字符检测实验</h1>
+  <span class="badge">Sandbox</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="overview">总览</div>
+  <div class="tab" data-tab="rapidocr">A: RapidOCR</div>
+  <div class="tab" data-tab="char_detection">B: char-detection</div>
+  <div class="tab" data-tab="craft">C: CRAFT</div>
+  <div class="tab" data-tab="baseline">Baseline: 投影法</div>
+</div>
+
+<div class="content">
+
+  <!-- Overview -->
+  <div class="section active" id="overview">
+    <div class="grid">
+      <div class="stat"><div class="label">测试图片</div><div class="value" id="s-images">0</div></div>
+      <div class="stat"><div class="label">对比方案</div><div class="value" id="s-methods">4</div></div>
+      <div class="stat"><div class="label">最优方案</div><div class="value" id="s-best" style="font-size:18px">-</div></div>
+      <div class="stat"><div class="label">最后更新</div><div class="value" id="s-updated" style="font-size:14px">-</div></div>
+    </div>
+    <div class="chart-box">
+      <h3>方案对比</h3>
+      <canvas id="comparisonChart" height="100"></canvas>
+    </div>
+    <div class="card">
+      <h3>对比汇总表</h3>
+      <table>
+        <thead><tr><th>方案</th><th>检测字符数</th><th>面积 CV</th><th>宽高比</th><th>间距 Std</th><th>推理时间</th><th>评分</th></tr></thead>
+        <tbody id="comparisonBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RapidOCR -->
+  <div class="section" id="rapidocr">
+    <div class="toolbar">
+      <h3>方案 A: RapidOCR v1.4.0 单字模式</h3>
+      <button class="btn" onclick="loadMethodData('rapidocr')">刷新数据</button>
+      <span class="info" id="rapidocr-info"></span>
+    </div>
+    <div class="grid" id="rapidocr-stats"></div>
+    <div class="card">
+      <h3>检测结果详情</h3>
+      <table>
+        <thead><tr><th>图片</th><th>字符数</th><th>面积 CV</th><th>宽高比</th><th>推理时间</th><th>状态</th></tr></thead>
+        <tbody id="rapidocr-body"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Bbox 叠加图</h3>
+      <div class="gallery" id="rapidocr-gallery"></div>
+    </div>
+  </div>
+
+  <!-- char-detection -->
+  <div class="section" id="char_detection">
+    <div class="toolbar">
+      <h3>方案 B: char-detection (CRNN + CTC)</h3>
+      <button class="btn" onclick="loadMethodData('char_detection')">刷新数据</button>
+      <span class="info" id="char_detection-info"></span>
+    </div>
+    <div class="grid" id="char_detection-stats"></div>
+    <div class="card">
+      <h3>检测结果详情</h3>
+      <table>
+        <thead><tr><th>图片</th><th>字符数</th><th>面积 CV</th><th>宽高比</th><th>推理时间</th><th>状态</th></tr></thead>
+        <tbody id="char_detection-body"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Bbox 叠加图</h3>
+      <div class="gallery" id="char_detection-gallery"></div>
+    </div>
+  </div>
+
+  <!-- CRAFT -->
+  <div class="section" id="craft">
+    <div class="toolbar">
+      <h3>方案 C: CRAFT</h3>
+      <button class="btn" onclick="loadMethodData('craft')">刷新数据</button>
+      <span class="info" id="craft-info"></span>
+    </div>
+    <div class="grid" id="craft-stats"></div>
+    <div class="card">
+      <h3>参数扫描结果</h3>
+      <table>
+        <thead><tr><th>link_threshold</th><th>text_threshold</th><th>字符数</th><th>推理时间</th></tr></thead>
+        <tbody id="craft-sweep-body"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>检测结果详情</h3>
+      <table>
+        <thead><tr><th>图片</th><th>字符数</th><th>面积 CV</th><th>宽高比</th><th>推理时间</th><th>状态</th></tr></thead>
+        <tbody id="craft-body"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>热力图 & Bbox</h3>
+      <div class="gallery" id="craft-gallery"></div>
+    </div>
+  </div>
+
+  <!-- Baseline -->
+  <div class="section" id="baseline">
+    <div class="toolbar">
+      <h3>Baseline: 投影法 (split_chars_final.py)</h3>
+      <button class="btn" onclick="loadMethodData('baseline')">刷新数据</button>
+      <span class="info" id="baseline-info"></span>
+    </div>
+    <div class="grid" id="baseline-stats"></div>
+    <div class="card">
+      <h3>检测结果详情</h3>
+      <table>
+        <thead><tr><th>图片</th><th>字符数</th><th>面积 CV</th><th>宽高比</th><th>推理时间</th><th>状态</th></tr></thead>
+        <tbody id="baseline-body"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>可视化</h3>
+      <div class="gallery" id="baseline-gallery"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="modal" onclick="this.classList.remove('show')">
+  <img id="modal-img" src="">
+</div>
+
+<script>
+const TABS = document.querySelectorAll('.tab');
+const SECTIONS = document.querySelectorAll('.section');
+
+TABS.forEach(tab => {
+  tab.addEventListener('click', () => {
+    TABS.forEach(t => t.classList.remove('active'));
+    SECTIONS.forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+function showModal(src) {
+  document.getElementById('modal-img').src = src;
+  document.getElementById('modal').classList.add('show');
+}
+
+async function fetchJSON(path) {
+  try {
+    const r = await fetch(path);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+async function loadMethodData(method) {
+  const data = await fetchJSON(`results/${method}/results.json`);
+  const infoEl = document.getElementById(`${method}-info`);
+  const statsEl = document.getElementById(`${method}-stats`);
+  const bodyEl = document.getElementById(`${method}-body`);
+  const galleryEl = document.getElementById(`${method}-gallery`);
+
+  if (!data) {
+    if (infoEl) infoEl.textContent = '暂无数据';
+    if (statsEl) statsEl.innerHTML = '<div class="empty"><p>运行实验后数据将自动显示</p></div>';
+    if (bodyEl) bodyEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim)">暂无数据</td></tr>';
+    return;
+  }
+
+  if (infoEl) infoEl.textContent = `更新: ${data.timestamp || '-'}`;
+
+  // Stats
+  if (statsEl && data.summary) {
+    const s = data.summary;
+    statsEl.innerHTML = `
+      <div class="stat"><div class="label">总检测字符</div><div class="value">${s.total_chars || 0}</div></div>
+      <div class="stat"><div class="label">平均面积 CV</div><div class="value">${(s.avg_area_cv || 0).toFixed(1)}<span class="unit">%</span></div></div>
+      <div class="stat"><div class="label">平均推理时间</div><div class="value">${(s.avg_time || 0).toFixed(2)}<span class="unit">s</span></div></div>
+    `;
+  }
+
+  // Table
+  if (bodyEl && data.images) {
+    bodyEl.innerHTML = data.images.map(img => `
+      <tr>
+        <td>${img.name}</td>
+        <td>${img.num_chars}</td>
+        <td>${(img.area_cv || 0).toFixed(1)}%</td>
+        <td>${(img.avg_aspect || 0).toFixed(2)}</td>
+        <td>${(img.time || 0).toFixed(2)}s</td>
+        <td><span class="status ${img.status || 'ok'}"></span>${img.status_text || '完成'}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Gallery
+  if (galleryEl && data.images) {
+    galleryEl.innerHTML = data.images.map(img => `
+      <div>
+        <img src="results/${method}/${img.name}/bboxes_overlay.png" onerror="this.src=''" onclick="showModal(this.src)">
+        <div class="caption">${img.name} (${img.num_chars} 字)</div>
+      </div>
+    `).join('');
+  }
+}
+
+async function loadOverview() {
+  const methods = ['rapidocr', 'char_detection', 'craft', 'baseline'];
+  const allData = {};
+  for (const m of methods) {
+    allData[m] = await fetchJSON(`results/${m}/results.json`);
+  }
+
+  // Comparison chart
+  const labels = methods.map(m => ({rapidocr:'RapidOCR', char_detection:'char-detection', craft:'CRAFT', baseline:'投影法'}[m]));
+  const chars = methods.map(m => allData[m]?.summary?.total_chars || 0);
+  const times = methods.map(m => allData[m]?.summary?.avg_time || 0);
+
+  const ctx = document.getElementById('comparisonChart');
+  if (ctx && ctx.getContext) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: '检测字符数', data: chars, backgroundColor: '#3b82f6', yAxisID: 'y' },
+          { label: '平均推理时间 (s)', data: times, backgroundColor: '#22c55e', yAxisID: 'y1' },
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { position: 'left', grid: { color: '#333' }, ticks: { color: '#999' } },
+          y1: { position: 'right', grid: { display: false }, ticks: { color: '#999' } },
+          x: { grid: { color: '#333' }, ticks: { color: '#999' } },
+        },
+        plugins: { legend: { labels: { color: '#999' } } }
+      }
+    });
+  }
+
+  // Comparison table
+  const body = document.getElementById('comparisonBody');
+  if (body) {
+    body.innerHTML = methods.map(m => {
+      const d = allData[m];
+      if (!d) return `<tr><td>${labels[methods.indexOf(m)]}</td><td colspan="5" style="color:var(--dim)">暂无数据</td></tr>`;
+      const s = d.summary || {};
+      return `<tr>
+        <td>${labels[methods.indexOf(m)]}</td>
+        <td>${s.total_chars || 0}</td>
+        <td>${(s.avg_area_cv || 0).toFixed(1)}%</td>
+        <td>${(s.avg_aspect || 0).toFixed(2)}</td>
+        <td>${(s.avg_spacing_std || 0).toFixed(1)}px</td>
+        <td>${(s.avg_time || 0).toFixed(2)}s</td>
+        <td>-</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Stats
+  const imageSet = new Set();
+  methods.forEach(m => { (allData[m]?.images || []).forEach(i => imageSet.add(i.name)); });
+  document.getElementById('s-images').textContent = imageSet.size || 0;
+}
+
+loadOverview();
+['rapidocr', 'char_detection', 'craft', 'baseline'].forEach(loadMethodData);
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "method": "craft",
+  "version": "craft-text-detector",
+  "timestamp": "2026-05-22T00:00:00Z",
+  "summary": {
+    "total_chars": 0,
+    "avg_area_cv": 0,
+    "avg_aspect": 0,
+    "avg_spacing_std": 0,
+    "avg_time": 0
+  },
+  "images": [],
+  "sweep": []
+}
