@@ -12,20 +12,19 @@
     --green: #22c55e; --red: #ef4444; --yellow: #eab308;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
   .header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; }
   .header h1 { font-size: 20px; font-weight: 600; }
   .header .badge { font-size: 12px; background: var(--accent); padding: 2px 8px; border-radius: 4px; }
-  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--panel); }
-  .tab { padding: 12px 24px; cursor: pointer; font-size: 14px; color: var(--dim); border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--panel); flex-wrap: wrap; }
+  .tab { padding: 12px 20px; cursor: pointer; font-size: 13px; color: var(--dim); border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
   .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .content { padding: 24px; max-width: 1400px; }
+  .content { padding: 24px; max-width: 1200px; }
   .section { display: none; }
   .section.active { display: block; }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
   .card h3 { font-size: 15px; margin-bottom: 12px; color: var(--text); }
-  .card .meta { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
   th { color: var(--dim); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -35,7 +34,7 @@
   .status.warn { background: var(--yellow); }
   .status.err { background: var(--red); }
   .status.pending { background: var(--dim); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px; }
   .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
   .stat .label { font-size: 12px; color: var(--dim); margin-bottom: 4px; }
   .stat .value { font-size: 28px; font-weight: 600; }
@@ -55,6 +54,23 @@
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
   .modal-overlay.show { display: flex; }
   .modal-overlay img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+  /* Markdown styles */
+  .md h1 { font-size: 22px; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .md h2 { font-size: 18px; margin: 20px 0 10px; color: var(--accent); }
+  .md h3 { font-size: 15px; margin: 16px 0 8px; color: var(--text); }
+  .md p { margin: 8px 0; }
+  .md ul, .md ol { margin: 8px 0 8px 24px; }
+  .md li { margin: 4px 0; }
+  .md code { background: #2a2a2a; padding: 2px 6px; border-radius: 3px; font-size: 13px; font-family: 'Fira Code', monospace; }
+  .md pre { background: #111; border: 1px solid var(--border); border-radius: 6px; padding: 16px; overflow-x: auto; margin: 12px 0; }
+  .md pre code { background: none; padding: 0; }
+  .md table { margin: 12px 0; }
+  .md blockquote { border-left: 3px solid var(--accent); padding-left: 12px; color: var(--dim); margin: 12px 0; }
+  .md strong { color: var(--text); }
+  .md hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .design-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -66,6 +82,7 @@
 
 <div class="tabs">
   <div class="tab active" data-tab="overview">总览</div>
+  <div class="tab" data-tab="design">设计方案</div>
   <div class="tab" data-tab="rapidocr">A: RapidOCR</div>
   <div class="tab" data-tab="char_detection">B: char-detection</div>
   <div class="tab" data-tab="craft">C: CRAFT</div>
@@ -74,7 +91,7 @@
 
 <div class="content">
 
-  <!-- Overview -->
+  <!-- ==================== Overview ==================== -->
   <div class="section active" id="overview">
     <div class="grid">
       <div class="stat"><div class="label">测试图片</div><div class="value" id="s-images">0</div></div>
@@ -95,7 +112,260 @@
     </div>
   </div>
 
-  <!-- RapidOCR -->
+  <!-- ==================== Design Docs ==================== -->
+  <div class="section" id="design">
+    <div class="md">
+
+      <!-- Task 1 -->
+      <h1>Task 1: 字符级检测实验</h1>
+      <h2>目标</h2>
+      <p>测试多种字符级检测方案在古籍碑文场景下的效果，选出最优方案。</p>
+
+      <h2>三个候选方案</h2>
+
+      <h3>方案 A: RapidOCR v1.4.0（主推）</h3>
+      <ul>
+        <li><strong>原理</strong>: 基于 PaddleOCR 推理引擎，v1.4.0 新增单字识别模式，返回单字坐标</li>
+        <li><strong>优点</strong>: PaddleOCR 生态成熟，无需 PyTorch，跨平台，性能好</li>
+        <li><strong>安装</strong>: <code>pip install rapidocr-onnxruntime</code> (ONNX 版)</li>
+        <li><strong>关键特性</strong>: 支持单字级别检测 + 识别，一次调用同时返回坐标和文字</li>
+        <li><strong>风险</strong>: 古籍碑文是否适配需要实际测试</li>
+      </ul>
+
+      <h3>方案 B: char-detection (fanqie03)</h3>
+      <ul>
+        <li><strong>原理</strong>: 基于 CRNN + CTC loss 的位置信息定位字符</li>
+        <li><strong>底层</strong>: chineseocr_lite OCR 引擎 + DBNet 文字检测</li>
+        <li><strong>用法</strong>: <code>python model.py --level char --images images/0.png</code></li>
+        <li><strong>特点</strong>: 支持横排和竖排/古文，char 级别可逐字切分</li>
+        <li><strong>风险</strong>: 基于 chineseocr_lite，古籍场景效果未知</li>
+      </ul>
+
+      <h3>方案 C: CRAFT（备选）</h3>
+      <ul>
+        <li><strong>原理</strong>: Character Region Awareness for Text Detection，产出 per-character 的 region/affinity score map</li>
+        <li><strong>安装</strong>: <code>pip install craft-text-detector</code>（PyTorch）</li>
+        <li><strong>方案 C1</strong>: CRAFT 直接对整页检测</li>
+        <li><strong>方案 C2</strong>: PaddleOCR 行级 → CRAFT 行内</li>
+        <li><strong>风险</strong>: PyTorch 依赖重，古籍碑文背景复杂可能误检多</li>
+      </ul>
+
+      <h3>Baseline: 投影法（现有方案）</h3>
+      <ul>
+        <li><code>split_chars_final.py</code> 的水平投影 + 间隙检测 + 等分补救</li>
+      </ul>
+
+      <h2>对比实验设计</h2>
+      <table>
+        <thead><tr><th>方案</th><th>模式</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>RapidOCR 单字模式</td><td>一次调用，检测+识别</td></tr>
+          <tr><td>B</td><td>char-detection --level char</td><td>CRNN 位置映射</td></tr>
+          <tr><td>C1</td><td>CRAFT 整页</td><td>端到端字符检测</td></tr>
+          <tr><td>C2</td><td>PaddleOCR 行 → CRAFT 行内</td><td>两级级联</td></tr>
+          <tr><td>Baseline</td><td>投影法</td><td>水平投影 + 间隙 + 等分</td></tr>
+        </tbody>
+      </table>
+
+      <h2>评估指标</h2>
+      <table>
+        <thead><tr><th>指标</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>字符数</td><td>检测到的区域数 vs 预期字符数</td></tr>
+          <tr><td>bbox 面积 CV</td><td>变异系数，越小越一致</td></tr>
+          <tr><td>宽高比分布</td><td>竖排文字应接近 1:1</td></tr>
+          <tr><td>字符间距标准差</td><td>同列内相邻字符间距应均匀</td></tr>
+          <tr><td>推理时间</td><td>总耗时</td></tr>
+          <tr><td>人工目视检查</td><td>热力图/bbox 叠加图人工评估</td></tr>
+        </tbody>
+      </table>
+
+      <h2>执行顺序</h2>
+      <ol>
+        <li>方案 A: 安装 RapidOCR，查文档确认单字模式 API，在 pic1 上测试</li>
+        <li>方案 B: 安装 char-detection，在 pic1 上跑 --level char</li>
+        <li>方案 C: 安装 CRAFT，在 pic1 上跑参数扫描</li>
+        <li>Baseline: 跑投影法</li>
+        <li>全量测试: 四个方案在 pic1-pic4 上跑</li>
+        <li>对比: 生成对比表，人工目视检查</li>
+        <li>结论: 选出最优方案（或组合方案）</li>
+      </ol>
+
+      <hr>
+
+      <!-- Task 2 -->
+      <h1>Task 2: 色彩分析字符切分</h1>
+      <h2>目标</h2>
+      <p>通过颜色聚类分析，在竖排文字条中找到纯色行（背景色）作为字符间的自然切分边界。</p>
+
+      <h2>背景</h2>
+      <p>现有方法（<code>split_chars_v3/v4.py</code>）使用水平投影法切分字符，在字符间距不明显时效果差。色彩分析法利用碑文中"字体色"和"背景色"的天然对比，找到纯背景色行作为切分间隙。</p>
+
+      <h2>算法流程</h2>
+      <pre><code>输入: 裁剪后的文字列图片 (BGR)
+  ├── 1. 颜色聚类 (Otsu 二值化)
+  │     灰度化 → Otsu 自动阈值 → 前景/背景二值图
+  ├── 2. 逐行颜色占比分析
+  │     主色占比 = max(white_ratio, 1 - white_ratio)
+  │     主色占比 >= 90% → 标记为"纯色行"
+  ├── 3. 纯色行区间 → 间隔区域
+  │     连续纯色行合并为间隔，间隔中点 → 切分线
+  ├── 4. 降级策略
+  │     找不到足够间隔 → 退化为等分方法
+  └── 5. 输出: 字符裁剪图 + 可视化图</code></pre>
+
+      <h2>核心函数</h2>
+      <pre><code>def analyze_colors(img) -> tuple[int, np.ndarray]:
+    """Otsu 二值化，返回 (阈值, 二值图)"""
+
+def find_pure_rows(binary, purity=0.90) -> list[tuple[int, int]]:
+    """找纯色行区间，返回 [(start, end), ...]"""
+
+def split_by_color(img, output_dir=None, purity=0.90) -> list[tuple[int, int]]:
+    """完整切分流程，返回字符区域 [(y1, y2), ...]"""</code></pre>
+
+      <h2>关键参数</h2>
+      <ul>
+        <li><strong>聚类算法</strong>: Otsu（比 KMeans 快几个数量级）</li>
+        <li><strong>purity 阈值</strong>: 0.90（90% 同色才算纯色行）</li>
+        <li><strong>当前</strong>: 仅竖排文字；架构预留横排支持</li>
+      </ul>
+
+      <h2>依赖</h2>
+      <p><code>opencv-python</code>, <code>numpy</code>（已在 pyproject.toml 中，无需额外依赖）</p>
+
+      <hr>
+
+      <!-- Task 3 -->
+      <h1>Task 3: VLM 字符完整性验证</h1>
+      <h2>目标</h2>
+      <p>用 Qwen2.5-VL-3B via DashScope API 验证每个字符图片是否包含完整、单一的汉字。</p>
+
+      <h2>验证范围</h2>
+      <ul>
+        <li><strong>单字</strong>: 图片中只有一个汉字</li>
+        <li><strong>完整</strong>: 字没有被截断</li>
+        <li><strong>不含其他字</strong>: 不包含相邻字符的边缘</li>
+        <li><strong>不负责识别</strong>具体是什么字（那是 HUNet 的工作）</li>
+      </ul>
+
+      <h2>Pipeline 位置</h2>
+      <pre><code>PaddleOCR 行检测 → 字符切分 → char crops → [可疑字符筛选] → VLM 验证 → 有效 crops → HUNet 识别</code></pre>
+
+      <h2>可疑字符判定条件（全部实现）</h2>
+      <ul>
+        <li><strong>面积异常</strong>: 面积 &lt; 0.5× 或 &gt; 1.5× 中位面积</li>
+        <li><strong>宽高比异常</strong>: 竖排字符宽高比偏离 1:1 太多</li>
+        <li><strong>切分来源</strong>: 来自等分补救的字符比来自纯色行间隙的更可疑</li>
+      </ul>
+
+      <h2>Prompt 设计</h2>
+      <pre><code>这个图片中是否包含一个完整的汉字？只回答 yes 或 no。
+Temperature: 0.1 | Max tokens: 10</code></pre>
+
+      <h2>输出</h2>
+      <p>只输出 pass/fail。失败的字符直接跳过，不传入 HUNet。</p>
+
+      <h2>核心函数</h2>
+      <pre><code>def validate_character_crop(image_path) -> bool:
+    """验证单个字符图片"""
+
+def validate_character_crops(image_dir, output_dir=None, max_workers=4) -> list[dict]:
+    """批量验证，返回 [{path, valid}, ...]"""</code></pre>
+
+      <h2>技术细节</h2>
+      <ul>
+        <li><strong>并发</strong>: ThreadPoolExecutor, 4 workers</li>
+        <li><strong>API 调用</strong>: 本地调用 DashScope API（不在服务器上）</li>
+        <li><strong>重试</strong>: 指数退避 3 次 (1s, 2s, 4s)</li>
+        <li><strong>保守策略</strong>: 模糊回复默认拒绝（False）</li>
+        <li><strong>本地降级</strong>: 后期在 A100 上跑本地 Qwen2.5-VL-3B</li>
+      </ul>
+
+      <hr>
+
+      <!-- Task 4 -->
+      <h1>Task 4: React 前端 MVP</h1>
+      <h2>目标</h2>
+      <p>构建古籍 OCR 标注平台的 Web 前端，支持自动化标注监控、手动标注审校、多格式导出。</p>
+
+      <h2>技术栈</h2>
+      <table>
+        <tbody>
+          <tr><td>框架</td><td>React 18 + Vite + TypeScript</td></tr>
+          <tr><td>样式</td><td>Tailwind CSS v4 (@tailwindcss/vite)</td></tr>
+          <tr><td>状态管理</td><td>Zustand</td></tr>
+          <tr><td>路由</td><td>react-router-dom (HashRouter)</td></tr>
+          <tr><td>Mock</td><td>MSW (Mock Service Worker)</td></tr>
+          <tr><td>HTTP</td><td>axios</td></tr>
+          <tr><td>字体</td><td>加载真实字体文件</td></tr>
+          <tr><td>Mock 数据</td><td>编造的占位数据</td></tr>
+        </tbody>
+      </table>
+
+      <h2>主题</h2>
+      <p>深色主题: 基底 <code>#1a1a1a</code> / 面板 <code>#242424</code> / 边框 <code>#333</code></p>
+
+      <h2>页面结构</h2>
+      <h3>1. UploadPage（上传）</h3>
+      <ul>
+        <li>图片拖拽区域 + 文件选择按钮</li>
+        <li>拖拽/选择后自动跳转到 DetectPage</li>
+      </ul>
+
+      <h3>2. DetectPage（自动化标注监控）</h3>
+      <ul>
+        <li>顶部：原图预览</li>
+        <li>主体：Pipeline 流程步骤列表（检测→切分→验证→识别）</li>
+        <li>每步显示状态（序号/完成/进行中/待执行）+ spinner</li>
+        <li>每步有参数配置入口（MVP 先做 UI 骨架）</li>
+      </ul>
+
+      <h3>3. AnnotatePage（手动标注与审校）— 核心</h3>
+      <ul>
+        <li><strong>左面板</strong>: 原图 + SVG 叠加层（viewBox 匹配图片自然尺寸，bbox 可 hover/选中）</li>
+        <li><strong>右面板</strong>: bbox 列表 + 编辑器（识别结果、ground truth）+ 预设字体列表</li>
+        <li>拖拽框选新区域 → VLM 识别（MVP 走 mock）</li>
+      </ul>
+
+      <h3>4. ExportPage（导出）</h3>
+      <ul>
+        <li>XML: PASCAL VOC 格式</li>
+        <li>JSON: <code>{dt_polys_rec: [{points, rec}, ...]}</code></li>
+        <li>HTML: 自包含，base64 图片 + SVG 叠加</li>
+      </ul>
+
+      <h2>状态管理（4 个 Zustand Store）</h2>
+      <table>
+        <thead><tr><th>Store</th><th>职责</th></tr></thead>
+        <tbody>
+          <tr><td>useProjectStore</td><td>图片 URL、尺寸、当前阶段、pipeline 状态</td></tr>
+          <tr><td>useDetectionStore</td><td>检测多边形数组、置信度</td></tr>
+          <tr><td>useAnnotationStore</td><td>字符 bbox、标签、ground truth</td></tr>
+          <tr><td>useUIStore</td><td>选中、hover、面板开关</td></tr>
+        </tbody>
+      </table>
+
+      <h2>实施阶段</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>内容</th><th>产出</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Vite 脚手架 + 依赖 + 类型 + stores + 路由骨架</td><td>可运行的空壳 app</td></tr>
+          <tr><td>2</td><td>ImageDropzone + UploadPage</td><td>图片上传功能</td></tr>
+          <tr><td>3</td><td>ImageOverlay + MSW Mock + DetectPage</td><td>检测可视化</td></tr>
+          <tr><td>4</td><td>BboxList + BboxEditor + AnnotatePage</td><td>标注编辑器</td></tr>
+          <tr><td>5</td><td>XML/JSON/HTML 生成 + ExportPage</td><td>导出功能</td></tr>
+          <tr><td>6</td><td>国际化 + 错误处理 + GitHub Pages 部署</td><td>完善</td></tr>
+        </tbody>
+      </table>
+
+      <h2>GPU 配置</h2>
+      <p>A100 48GB，CUDA 12。当前阶段用 API 调用，后期可迁移到本地推理。</p>
+
+    </div>
+  </div>
+
+  <!-- ==================== RapidOCR ==================== -->
   <div class="section" id="rapidocr">
     <div class="toolbar">
       <h3>方案 A: RapidOCR v1.4.0 单字模式</h3>
@@ -116,7 +386,7 @@
     </div>
   </div>
 
-  <!-- char-detection -->
+  <!-- ==================== char-detection ==================== -->
   <div class="section" id="char_detection">
     <div class="toolbar">
       <h3>方案 B: char-detection (CRNN + CTC)</h3>
@@ -137,7 +407,7 @@
     </div>
   </div>
 
-  <!-- CRAFT -->
+  <!-- ==================== CRAFT ==================== -->
   <div class="section" id="craft">
     <div class="toolbar">
       <h3>方案 C: CRAFT</h3>
@@ -165,7 +435,7 @@
     </div>
   </div>
 
-  <!-- Baseline -->
+  <!-- ==================== Baseline ==================== -->
   <div class="section" id="baseline">
     <div class="toolbar">
       <h3>Baseline: 投影法 (split_chars_final.py)</h3>
@@ -234,7 +504,6 @@ async function loadMethodData(method) {
 
   if (infoEl) infoEl.textContent = `更新: ${data.timestamp || '-'}`;
 
-  // Stats
   if (statsEl && data.summary) {
     const s = data.summary;
     statsEl.innerHTML = `
@@ -244,7 +513,6 @@ async function loadMethodData(method) {
     `;
   }
 
-  // Table
   if (bodyEl && data.images) {
     bodyEl.innerHTML = data.images.map(img => `
       <tr>
@@ -258,14 +526,28 @@ async function loadMethodData(method) {
     `).join('');
   }
 
-  // Gallery
   if (galleryEl && data.images) {
     galleryEl.innerHTML = data.images.map(img => `
       <div>
-        <img src="results/${method}/${img.name}/bboxes_overlay.png" onerror="this.src=''" onclick="showModal(this.src)">
+        <img src="results/${method}/${img.name}/bboxes_overlay.png" onerror="this.style.display='none'" onclick="showModal(this.src)">
         <div class="caption">${img.name} (${img.num_chars} 字)</div>
       </div>
     `).join('');
+  }
+
+  // CRAFT sweep table
+  if (method === 'craft' && data.sweep) {
+    const sweepBody = document.getElementById('craft-sweep-body');
+    if (sweepBody) {
+      sweepBody.innerHTML = data.sweep.map(r => `
+        <tr>
+          <td>${r.link_threshold}</td>
+          <td>${r.text_threshold}</td>
+          <td>${r.num_regions}</td>
+          <td>${(r.elapsed || 0).toFixed(2)}s</td>
+        </tr>
+      `).join('');
+    }
   }
 }
 
@@ -276,7 +558,6 @@ async function loadOverview() {
     allData[m] = await fetchJSON(`results/${m}/results.json`);
   }
 
-  // Comparison chart
   const labels = methods.map(m => ({rapidocr:'RapidOCR', char_detection:'char-detection', craft:'CRAFT', baseline:'投影法'}[m]));
   const chars = methods.map(m => allData[m]?.summary?.total_chars || 0);
   const times = methods.map(m => allData[m]?.summary?.avg_time || 0);
@@ -304,7 +585,6 @@ async function loadOverview() {
     });
   }
 
-  // Comparison table
   const body = document.getElementById('comparisonBody');
   if (body) {
     body.innerHTML = methods.map(m => {
@@ -323,7 +603,6 @@ async function loadOverview() {
     }).join('');
   }
 
-  // Stats
   const imageSet = new Set();
   methods.forEach(m => { (allData[m]?.images || []).forEach(i => imageSet.add(i.name)); });
   document.getElementById('s-images').textContent = imageSet.size || 0;
