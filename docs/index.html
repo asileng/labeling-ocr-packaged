@@ -51,61 +51,75 @@
 
 <h2>Task 1: 字符级检测实验结果</h2>
 
-<h3>方案 A: RapidOCR (return_word_box=True)</h3>
+<h3>方案 A: RapidOCR 纯检测模式 (det only)</h3>
 <p><strong>状态</strong>: ✅ 已完成</p>
 <p><strong>输入</strong>: 行检测后的裁剪文字行图片 (61x833)</p>
-<p><strong>输出</strong>: 单字级别bbox检测结果</p>
+<p><strong>输出</strong>: 字符区域bbox检测结果</p>
 
 <h4>原图 vs 检测结果对比</h4>
 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
   <div>
     <p><strong>原图</strong></p>
-    <img src="sandbox/task1/rapidocr_char/original.png" style="max-height: 400px; border: 1px solid #333;">
+    <img src="sandbox/task1/rapidocr_det_only/original.png" style="max-height: 400px; border: 1px solid #333;">
   </div>
   <div>
     <p><strong>检测结果 (bbox叠加)</strong></p>
-    <img src="sandbox/task1/rapidocr_char/box_0000_bboxes_overlay.png" style="max-height: 400px; border: 1px solid #333;">
+    <img src="sandbox/task1/rapidocr_det_only/box_0000_bboxes_overlay.png" style="max-height: 400px; border: 1px solid #333;">
   </div>
 </div>
 
 <h4>检测结果</h4>
 <table>
-<thead><tr><th>字符</th><th>置信度</th><th>位置 (y坐标)</th></tr></thead>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
 <tbody>
-<tr><td>有</td><td>99.99%</td><td>96-137</td></tr>
-<tr><td>此</td><td>99.46%</td><td>136-168</td></tr>
-<tr><td>制</td><td>86.93%</td><td>167-203</td></tr>
-<tr><td>城</td><td>99.99%</td><td>343-379</td></tr>
-<tr><td>威</td><td>99.99%</td><td>712-748</td></tr>
+<tr><td>检测模式</td><td>纯检测 (use_det=True, use_rec=False)</td></tr>
+<tr><td>检测到的字符区域数</td><td>23</td></tr>
+<tr><td>推理时间</td><td>5.63s</td></tr>
+<tr><td>图片尺寸</td><td>61x833</td></tr>
 </tbody>
 </table>
 
-<h4>单字裁剪图</h4>
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <div style="text-align: center;">
-    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0000.png" style="height: 60px; border: 1px solid #333;">
-    <p>有</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0001.png" style="height: 60px; border: 1px solid #333;">
-    <p>此</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0002.png" style="height: 60px; border: 1px solid #333;">
-    <p>制</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0003.png" style="height: 60px; border: 1px solid #333;">
-    <p>城</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0004.png" style="height: 60px; border: 1px solid #333;">
-    <p>威</p>
-  </div>
-</div>
+<h4>检测到的bbox坐标</h4>
+<p>共检测到23个字符区域，坐标如下：</p>
+<pre><code>1.  [35,12] [48,10] [49,26] [36,27]
+2.  [16,62] [35,63] [34,87] [14,86]
+3.  [34,69] [47,68] [48,83] [35,84]
+4.  [12,96] [52,104] [45,137] [5,129]
+5.  [10,136] [53,136] [53,168] [10,168]
+6.  [6,177] [42,167] [49,194] [13,203]
+7.  [11,195] [40,195] [40,214] [11,214]
+8.  [40,268] [46,268] [46,276] [40,276]
+9.  [16,280] [48,277] [49,294] [17,297]
+10. [5,317] [36,298] [53,326] [22,345]
+11. [8,343] [57,345] [56,379] [6,377]
+12. [27,433] [42,433] [42,445] [27,445]
+13. [32,476] [47,476] [47,494] [32,494]
+14. [15,523] [50,513] [57,538] [21,548]
+15. [11,562] [43,557] [46,580] [14,584]
+16. [16,582] [55,589] [51,616] [11,609]
+17. [39,612] [48,612] [48,620] [39,620]
+18. [16,649] [26,642] [31,651] [21,657]
+19. [14,673] [50,672] [51,697] [15,698]
+20. [15,712] [52,709] [55,745] [17,748]
+21. [16,749] [35,749] [35,760] [16,760]
+22. [40,776] [47,776] [47,781] [40,781]
+23. [18,808] [51,807] [52,826] [19,827]</code></pre>
 
 <h4>结论</h4>
-<p>RapidOCR的 <code>return_word_box=True</code> 参数可以实现单字级别检测，效果良好，推荐作为Task 1的最终方案。</p>
+<p>RapidOCR纯检测模式可以检测到23个字符区域，接近预期的20个字符。检测结果包含多个小区域（可能是噪声或笔画），需要进一步筛选。</p>
+
+<hr>
+
+<h3>对比: 检测+识别模式 (return_word_box=True)</h3>
+<p>之前使用 <code>return_word_box=True</code> 只检测到5个字符，是因为识别过程过滤掉了低置信度的结果。</p>
+
+<table>
+<thead><tr><th>模式</th><th>检测数量</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>纯检测 (det only)</td><td>23</td><td>检测所有字符区域，包括噪声</td></tr>
+<tr><td>检测+识别 (return_word_box)</td><td>5</td><td>只返回高置信度识别结果</td></tr>
+</tbody>
+</table>
 
 <hr>
 
