@@ -1,0 +1,63 @@
+{
+  "method": "Qwen3-VL vs RapidOCR对比",
+  "comparisons": [
+    {
+      "ground_truth": "录释云麒麟",
+      "ocr_text": "",
+      "gt_length": 5,
+      "ocr_length": 0,
+      "lcs_length": 0,
+      "accuracy": 0.0,
+      "image": "pic1/box_0002.png"
+    },
+    {
+      "ground_truth": "范史趙岐傳云\n者又八十六人得之括蒼梁季珩",
+      "ocr_text": "",
+      "gt_length": 20,
+      "ocr_length": 0,
+      "lcs_length": 0,
+      "accuracy": 0.0,
+      "image": "pic2/box_0027.png"
+    },
+    {
+      "ground_truth": "更患在於地理所見",
+      "ocr_text": "夏地泉",
+      "gt_length": 8,
+      "ocr_length": 3,
+      "lcs_length": 1,
+      "accuracy": 0.125,
+      "image": "pic3/box_0000.png"
+    },
+    {
+      "ground_truth": "夏禹長於地理脈泉知陰隨時設防退為內刑",
+      "ocr_text": "夏禹兰地理月脉泉口院随時設B方退為肉",
+      "gt_length": 18,
+      "ocr_length": 18,
+      "lcs_length": 9,
+      "accuracy": 0.5,
+      "image": "pic4/box_0002.png"
+    },
+    {
+      "ground_truth": "之未至",
+      "ocr_text": "未至",
+      "gt_length": 3,
+      "ocr_length": 2,
+      "lcs_length": 2,
+      "accuracy": 0.6667,
+      "image": "pic1/box_0010.png"
+    },
+    {
+      "ground_truth": "此最為奇偉",
+      "ocr_text": "為偉",
+      "gt_length": 5,
+      "ocr_length": 2,
+      "lcs_length": 2,
+      "accuracy": 0.4,
+      "image": "pic1/box_0007.png"
+    }
+  ],
+  "summary": {
+    "total_images": 6,
+    "avg_accuracy": 0.2819
+  }
+}
