@@ -159,7 +159,129 @@
 </table>
 
 <h2>Task 2: 色彩分析字符切分</h2>
-<p>待实验...</p>
+
+<h3>色彩分析切分实验 (adaptiveThreshold + 纯色行检测)</h3>
+<p><strong>状态</strong>: ✅ 已完成</p>
+<p><strong>算法</strong>: adaptiveThreshold 二值化 → 3×3 形态学开运算 → 逐行纯色检测 (purity=0.85) → 间隔合并 (min_width=5px) → 中点切分</p>
+<p><strong>输入</strong>: RapidOCR 行检测后裁剪出的 56 个文字行 (pic1: 12, pic2: 40, pic3: 1, pic4: 3)</p>
+
+<h4>实验结果汇总</h4>
+<table>
+<thead><tr><th>图片</th><th>文字行数</th><th>成功切分</th><th>降级等分</th><th>总字符数</th></tr></thead>
+<tbody>
+<tr><td>pic1</td><td>12</td><td>2</td><td>10</td><td>33</td></tr>
+<tr><td>pic2</td><td>40</td><td>11</td><td>29</td><td>388</td></tr>
+<tr><td>pic3</td><td>1</td><td>1</td><td>0</td><td>5</td></tr>
+<tr><td>pic4</td><td>3</td><td>2</td><td>1</td><td>24</td></tr>
+<tr><td><strong>合计</strong></td><td><strong>56</strong></td><td><strong>16 (29%)</strong></td><td><strong>40 (71%)</strong></td><td><strong>450</strong></td></tr>
+</tbody>
+</table>
+<p>可视化说明: 左侧=原图，右侧=二值化+叠加层 (灰色条=逐行纯色占比，红色线=切分线，绿色线=字符边界)</p>
+
+<h4>Pic1 切分结果 (12 text lines)</h4>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+  <div><img src="sandbox/task2/color_split/pic1_box_0000.png" style="height: 300px; border: 1px solid #333;" title="box_0000: 8 intervals, 9 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic1_box_0001.png" style="height: 300px; border: 1px solid #333;" title="box_0001: 3 intervals, 3 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic1_box_0008.png" style="height: 300px; border: 1px solid #333;" title="box_0008: FALLBACK, 2 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic1_box_0011.png" style="height: 300px; border: 1px solid #333;" title="box_0011: 3 intervals, 4 chars"></div>
+</div>
+
+<h4>Pic2 切分结果 (40 text lines, 部分展示)</h4>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+  <div><img src="sandbox/task2/color_split/pic2_box_0000.png" style="height: 300px; border: 1px solid #333;" title="box_0000: FALLBACK, 13 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic2_box_0007.png" style="height: 300px; border: 1px solid #333;" title="box_0007: 4 intervals, 4 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic2_box_0018.png" style="height: 300px; border: 1px solid #333;" title="box_0018: 3 intervals, 4 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic2_box_0029.png" style="height: 300px; border: 1px solid #333;" title="box_0029: FALLBACK, 14 chars"></div>
+</div>
+
+<h4>Pic3 & Pic4 切分结果</h4>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+  <div><img src="sandbox/task2/color_split/pic3_box_0000.png" style="height: 300px; border: 1px solid #333;" title="pic3/box_0000: 5 intervals, 5 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic4_box_0000.png" style="height: 300px; border: 1px solid #333;" title="pic4/box_0000: 7 intervals, 8 chars"></div>
+  <div><img src="sandbox/task2/color_split/pic4_box_0002.png" style="height: 300px; border: 1px solid #333;" title="pic4/box_0002: 14 intervals, 15 chars"></div>
+</div>
+
+<h4>关键参数</h4>
+<table>
+<thead><tr><th>参数</th><th>值</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>二值化</td><td>adaptiveThreshold (Gaussian)</td><td>block_size = width/3 (自适应)</td></tr>
+<tr><td>形态学去噪</td><td>3×3 开运算</td><td>默认开启</td></tr>
+<tr><td>purity 阈值</td><td>0.85</td><td>85% 同色才算纯色行</td></tr>
+<tr><td>最小间隔宽度</td><td>5px</td><td>过滤噪声间隔</td></tr>
+<tr><td>降级阈值</td><td>&lt;3 个间隔</td><td>退化为等分 (字符数 = 高度/(宽度×1.3))</td></tr>
+</tbody>
+</table>
+
+<h4>分析</h4>
+<ul>
+<li>29% 的文字行成功用色彩分析切分，71% 降级到等分</li>
+<li>降级原因：拓片质量不均，二值化后纯色行不足 (dominant ratio 峰值低于 0.85)</li>
+<li>成功切分的 case 效果良好，切分线准确落在字符间隙处</li>
+<li>等分降级作为保底策略，字符高度估算基本合理</li>
+</ul>
+
+<hr>
+
+<h3>RapidOCR随机抽样检测结果</h3>
+<p><strong>状态</strong>: ✅ 已完成</p>
+<p><strong>输入</strong>: 从task2_input随机抽取10张图片（每文件夹至少1张）</p>
+<p><strong>检测模式</strong>: return_word_box=True（有置信度要求）</p>
+
+<h4>实验结果汇总</h4>
+<table>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>处理图片数</td><td>10</td></tr>
+<tr><td>总检测字符数</td><td>27</td></tr>
+<tr><td>平均置信度</td><td>0.4561</td></tr>
+<tr><td>检测成功图片</td><td>5/10</td></tr>
+</tbody>
+</table>
+
+<h4>各图片检测结果</h4>
+<table>
+<thead><tr><th>图片</th><th>文件夹</th><th>字符数</th><th>平均置信度</th><th>识别文字</th></tr></thead>
+<tbody>
+<tr><td>box_0002.png</td><td>pic1</td><td>4</td><td>0.9524</td><td>释云麒麟</td></tr>
+<tr><td>box_0027.png</td><td>pic2</td><td>0</td><td>-</td><td>-</td></tr>
+<tr><td>box_0000.png</td><td>pic3</td><td>3</td><td>0.9383</td><td>夏地泉</td></tr>
+<tr><td>box_0002.png</td><td>pic4</td><td>16</td><td>0.8354</td><td>夏禹兰地理月脉泉口院随時設B方退為肉</td></tr>
+<tr><td>box_0009.png</td><td>pic2</td><td>0</td><td>-</td><td>-</td></tr>
+<tr><td>box_0018.png</td><td>pic2</td><td>0</td><td>-</td><td>-</td></tr>
+<tr><td>box_0037.png</td><td>pic2</td><td>0</td><td>-</td><td>-</td></tr>
+<tr><td>box_0010.png</td><td>pic1</td><td>2</td><td>0.8974</td><td>未至</td></tr>
+<tr><td>box_0021.png</td><td>pic2</td><td>0</td><td>-</td><td>-</td></tr>
+<tr><td>box_0007.png</td><td>pic1</td><td>2</td><td>0.9372</td><td>為偉</td></tr>
+</tbody>
+</table>
+
+<h4>可视化示例</h4>
+<p>置信度颜色: <span style="color: #00ff00;">绿色 ≥0.9</span> | <span style="color: #ffff00;">黄色 ≥0.7</span> | <span style="color: #ff0000;">红色 <0.7</span></p>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+  <div>
+    <p><strong>pic4/box_0002 (16字符)</strong></p>
+    <div style="display: flex; gap: 10px;">
+      <img src="sandbox/task2/random_sample/box_0002_original.png" style="max-height: 200px; border: 1px solid #333;">
+      <img src="sandbox/task2/random_sample/box_0002_bboxes_overlay.png" style="max-height: 200px; border: 1px solid #333;">
+    </div>
+  </div>
+  <div>
+    <p><strong>pic1/box_0002 (4字符)</strong></p>
+    <div style="display: flex; gap: 10px;">
+      <img src="sandbox/task2/random_sample/box_0002_original.png" style="max-height: 200px; border: 1px solid #333;">
+      <img src="sandbox/task2/random_sample/box_0002_bboxes_overlay.png" style="max-height: 200px; border: 1px solid #333;">
+    </div>
+  </div>
+</div>
+
+<h4>结论</h4>
+<ul>
+<li>50%的图片成功检测到字符，说明古籍碑文场景下检测难度较大</li>
+<li>成功检测的图片置信度较高（0.83-0.95）</li>
+<li>pic2文件夹的图片普遍未检测到文字，可能需要调整参数或使用其他方案</li>
+</ul>
 
 <h2>Task 3: VLM 字符完整性验证</h2>
 <p>待实验...</p>
