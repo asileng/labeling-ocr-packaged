@@ -12,7 +12,7 @@
   .tab { padding: 14px 28px; cursor: pointer; font-size: 14px; color: var(--dim); border-bottom: 2px solid transparent; }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .content { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+  .content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
   .section { display: none; }
   .section.active { display: block; }
   h1 { font-size: 24px; margin: 32px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
@@ -30,6 +30,27 @@
   th { color: var(--dim); font-weight: 500; font-size: 12px; text-transform: uppercase; }
   strong { color: #fff; }
   hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Image Viewer */
+  .image-viewer { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .viewer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .viewer-title { font-size: 16px; font-weight: 600; }
+  .viewer-nav { display: flex; gap: 10px; }
+  .viewer-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .viewer-btn:hover { background: var(--accent); border-color: var(--accent); }
+  .viewer-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .viewer-content { display: flex; gap: 20px; flex-wrap: wrap; }
+  .viewer-image { flex: 1; min-width: 300px; }
+  .viewer-image img { width: 100%; border: 1px solid var(--border); border-radius: 4px; }
+  .viewer-image .label { font-size: 12px; color: var(--dim); margin-top: 8px; text-align: center; }
+  .viewer-info { flex: 1; min-width: 300px; background: var(--bg); padding: 15px; border-radius: 6px; }
+  .viewer-info h4 { margin-bottom: 10px; color: var(--accent); }
+  .viewer-info p { margin: 5px 0; font-size: 14px; }
+  .viewer-info .highlight { color: #00ff00; font-weight: bold; }
+  .viewer-info .error { color: #ff6b6b; }
+  .viewer-progress { display: flex; justify-content: center; gap: 8px; margin-top: 15px; }
+  .viewer-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; }
+  .viewer-dot.active { background: var(--accent); }
 </style>
 </head>
 <body>
@@ -48,6 +69,10 @@
 <div class="section active" id="sandbox">
 <h1>实验结果 Sandbox</h1>
 <p>这里是各Task的实验结果展示区域。</p>
+
+<div id="image-viewer"></div>
+
+<hr>
 
 <h2>Task 1: 字符级检测实验结果</h2>
 
@@ -680,6 +705,135 @@ document.querySelectorAll('.tab').forEach(tab => {
     section.style.display = 'block';
   });
 });
+
+// Image Viewer
+class ImageViewer {
+  constructor(containerId, images) {
+    this.container = document.getElementById(containerId);
+    this.images = images;
+    this.currentIndex = 0;
+    this.render();
+  }
+
+  render() {
+    const img = this.images[this.currentIndex];
+    this.container.innerHTML = `
+      <div class="image-viewer">
+        <div class="viewer-header">
+          <span class="viewer-title">${img.name}</span>
+          <div class="viewer-nav">
+            <button class="viewer-btn" onclick="imageViewer.prev()" ${this.currentIndex === 0 ? 'disabled' : ''}>← 上一个</button>
+            <button class="viewer-btn" onclick="imageViewer.next()" ${this.currentIndex === this.images.length - 1 ? 'disabled' : ''}>下一个 →</button>
+          </div>
+        </div>
+        <div class="viewer-content">
+          <div class="viewer-image">
+            <img src="${img.original}" alt="原图">
+            <div class="label">原图</div>
+          </div>
+          <div class="viewer-image">
+            <img src="${img.overlay}" alt="检测结果">
+            <div class="label">检测结果</div>
+          </div>
+          <div class="viewer-info">
+            <h4>检测信息</h4>
+            <p><strong>来源:</strong> ${img.source}</p>
+            <p><strong>字符数:</strong> ${img.charCount}</p>
+            <p><strong>置信度:</strong> ${img.confidence}</p>
+            <p><strong>识别文字:</strong></p>
+            <p class="highlight">${img.text}</p>
+            ${img.accuracy ? `<p><strong>准确率:</strong> <span class="${img.accuracy >= 0.5 ? 'highlight' : 'error'}">${(img.accuracy * 100).toFixed(1)}%</span></p>` : ''}
+          </div>
+        </div>
+        <div class="viewer-progress">
+          ${this.images.map((_, i) => `<div class="viewer-dot ${i === this.currentIndex ? 'active' : ''}" onclick="imageViewer.goTo(${i})"></div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.render();
+    }
+  }
+
+  next() {
+    if (this.currentIndex < this.images.length - 1) {
+      this.currentIndex++;
+      this.render();
+    }
+  }
+
+  goTo(index) {
+    this.currentIndex = index;
+    this.render();
+  }
+}
+
+// Initialize image viewer
+const imageViewer = new ImageViewer('image-viewer', [
+  {
+    name: 'Task 1: RapidOCR 纯检测 (pic1)',
+    original: 'sandbox/task1/rapidocr_det_only/original.png',
+    overlay: 'sandbox/task1/rapidocr_det_only/box_0000_bboxes_overlay.png',
+    source: 'task1/rapidocr_det_only',
+    charCount: '23个区域',
+    confidence: '-',
+    text: '纯检测模式，检测所有字符区域'
+  },
+  {
+    name: 'Task 2: pic1/box_0002 (4字符)',
+    original: 'sandbox/task2/random_sample/box_0002_original.png',
+    overlay: 'sandbox/task2/random_sample/box_0002_bboxes_overlay.png',
+    source: 'pic1/box_0002.png',
+    charCount: '4',
+    confidence: '95.24%',
+    text: '释云麒麟',
+    accuracy: 0.8
+  },
+  {
+    name: 'Task 2: pic3/box_0000 (3字符)',
+    original: 'sandbox/task2/random_sample/box_0000_original.png',
+    overlay: 'sandbox/task2/random_sample/box_0000_bboxes_overlay.png',
+    source: 'pic3/box_0000.png',
+    charCount: '3',
+    confidence: '93.83%',
+    text: '夏地泉',
+    accuracy: 0.125
+  },
+  {
+    name: 'Task 2: pic4/box_0002 (16字符)',
+    original: 'sandbox/task2/random_sample/box_0002_original.png',
+    overlay: 'sandbox/task2/random_sample/box_0002_bboxes_overlay.png',
+    source: 'pic4/box_0002.png',
+    charCount: '16',
+    confidence: '83.54%',
+    text: '夏禹兰地理月脉泉口院随時設B方退為肉',
+    accuracy: 0.5
+  },
+  {
+    name: 'Task 2: pic1/box_0010 (2字符)',
+    original: 'sandbox/task2/random_sample/box_0010_original.png',
+    overlay: 'sandbox/task2/random_sample/box_0010_bboxes_overlay.png',
+    source: 'pic1/box_0010.png',
+    charCount: '2',
+    confidence: '89.74%',
+    text: '未至',
+    accuracy: 0.6667
+  },
+  {
+    name: 'Task 2: pic1/box_0007 (2字符)',
+    original: 'sandbox/task2/random_sample/box_0007_original.png',
+    overlay: 'sandbox/task2/random_sample/box_0007_bboxes_overlay.png',
+    source: 'pic1/box_0007.png',
+    charCount: '2',
+    confidence: '93.72%',
+    text: '為偉',
+    accuracy: 0.4
+  }
+]);
 </script>
 </body>
 </html>
