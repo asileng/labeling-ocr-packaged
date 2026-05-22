@@ -1,0 +1,61 @@
+{
+  "image": "box_0007.png",
+  "folder": "pic1",
+  "image_size": {
+    "width": 73,
+    "height": 266
+  },
+  "total_chars": 2,
+  "elapsed_seconds": 1.524,
+  "avg_confidence": 0.9372,
+  "boxes": [
+    {
+      "id": 0,
+      "bbox": [
+        [
+          16.0,
+          95.0
+        ],
+        [
+          72.0,
+          103.0
+        ],
+        [
+          68.0,
+          163.0
+        ],
+        [
+          8.0,
+          155.0
+        ]
+      ],
+      "text": "為",
+      "confidence": 0.9934,
+      "crop_path": "char_0000.png"
+    },
+    {
+      "id": 1,
+      "bbox": [
+        [
+          0.0,
+          203.0
+        ],
+        [
+          63.0,
+          198.0
+        ],
+        [
+          68.0,
+          265.0
+        ],
+        [
+          5.0,
+          265.0
+        ]
+      ],
+      "text": "偉",
+      "confidence": 0.8811,
+      "crop_path": "char_0001.png"
+    }
+  ]
+}

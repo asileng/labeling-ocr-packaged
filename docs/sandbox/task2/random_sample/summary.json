@@ -1,0 +1,782 @@
+{
+  "method": "RapidOCR v1.4.4 (return_word_box=True)",
+  "description": "随机抽样字级别检测，有置信度要求",
+  "total_images": 10,
+  "total_chars": 27,
+  "avg_confidence": 0.4561,
+  "results": [
+    {
+      "image": "box_0002.png",
+      "folder": "pic1",
+      "image_size": {
+        "width": 68,
+        "height": 273
+      },
+      "total_chars": 4,
+      "elapsed_seconds": 1.763,
+      "avg_confidence": 0.9524,
+      "boxes": [
+        {
+          "id": 0,
+          "bbox": [
+            [
+              0.0,
+              53.0
+            ],
+            [
+              65.0,
+              52.0
+            ],
+            [
+              67.0,
+              119.0
+            ],
+            [
+              0.0,
+              121.0
+            ]
+          ],
+          "text": "释",
+          "confidence": 0.8313,
+          "crop_path": "char_0000.png"
+        },
+        {
+          "id": 1,
+          "bbox": [
+            [
+              11.0,
+              110.0
+            ],
+            [
+              62.0,
+              116.0
+            ],
+            [
+              57.0,
+              155.0
+            ],
+            [
+              7.0,
+              150.0
+            ]
+          ],
+          "text": "云",
+          "confidence": 0.9925,
+          "crop_path": "char_0001.png"
+        },
+        {
+          "id": 2,
+          "bbox": [
+            [
+              3.0,
+              152.0
+            ],
+            [
+              65.0,
+              154.0
+            ],
+            [
+              64.0,
+              211.0
+            ],
+            [
+              2.0,
+              209.0
+            ]
+          ],
+          "text": "麒",
+          "confidence": 0.9963,
+          "crop_path": "char_0002.png"
+        },
+        {
+          "id": 3,
+          "bbox": [
+            [
+              0.0,
+              204.0
+            ],
+            [
+              67.0,
+              205.0
+            ],
+            [
+              67.0,
+              272.0
+            ],
+            [
+              0.0,
+              272.0
+            ]
+          ],
+          "text": "麟",
+          "confidence": 0.9894,
+          "crop_path": "char_0003.png"
+        }
+      ]
+    },
+    {
+      "image": "box_0027.png",
+      "folder": "pic2",
+      "image_size": {
+        "width": 47,
+        "height": 814
+      },
+      "total_chars": 0,
+      "elapsed_seconds": 8.298,
+      "avg_confidence": 0,
+      "boxes": []
+    },
+    {
+      "image": "box_0000.png",
+      "folder": "pic3",
+      "image_size": {
+        "width": 48,
+        "height": 293
+      },
+      "total_chars": 3,
+      "elapsed_seconds": 3.203,
+      "avg_confidence": 0.9383,
+      "boxes": [
+        {
+          "id": 0,
+          "bbox": [
+            [
+              5.0,
+              0.0
+            ],
+            [
+              40.0,
+              0.0
+            ],
+            [
+              40.0,
+              51.0
+            ],
+            [
+              5.0,
+              51.0
+            ]
+          ],
+          "text": "夏",
+          "confidence": 0.8563,
+          "crop_path": "char_0000.png"
+        },
+        {
+          "id": 1,
+          "bbox": [
+            [
+              1.0,
+              155.0
+            ],
+            [
+              44.0,
+              156.0
+            ],
+            [
+              43.0,
+              184.0
+            ],
+            [
+              0.0,
+              183.0
+            ]
+          ],
+          "text": "地",
+          "confidence": 0.9782,
+          "crop_path": "char_0001.png"
+        },
+        {
+          "id": 2,
+          "bbox": [
+            [
+              4.0,
+              240.0
+            ],
+            [
+              47.0,
+              243.0
+            ],
+            [
+              45.0,
+              292.0
+            ],
+            [
+              0.0,
+              292.0
+            ]
+          ],
+          "text": "泉",
+          "confidence": 0.9804,
+          "crop_path": "char_0002.png"
+        }
+      ]
+    },
+    {
+      "image": "box_0002.png",
+      "folder": "pic4",
+      "image_size": {
+        "width": 68,
+        "height": 739
+      },
+      "total_chars": 16,
+      "elapsed_seconds": 5.015,
+      "avg_confidence": 0.8354,
+      "boxes": [
+        {
+          "id": 0,
+          "bbox": [
+            [
+              2.0,
+              0.0
+            ],
+            [
+              52.0,
+              0.0
+            ],
+            [
+              50.0,
+              59.0
+            ],
+            [
+              0.0,
+              57.0
+            ]
+          ],
+          "text": "夏",
+          "confidence": 0.9954,
+          "crop_path": "char_0000.png"
+        },
+        {
+          "id": 1,
+          "bbox": [
+            [
+              0.0,
+              53.0
+            ],
+            [
+              52.0,
+              46.0
+            ],
+            [
+              59.0,
+              105.0
+            ],
+            [
+              0.0,
+              112.0
+            ]
+          ],
+          "text": "禹",
+          "confidence": 0.5981,
+          "crop_path": "char_0001.png"
+        },
+        {
+          "id": 2,
+          "bbox": [
+            [
+              0.0,
+              156.0
+            ],
+            [
+              49.0,
+              156.0
+            ],
+            [
+              49.0,
+              193.0
+            ],
+            [
+              0.0,
+              193.0
+            ]
+          ],
+          "text": "兰",
+          "confidence": 0.7353,
+          "crop_path": "char_0002.png"
+        },
+        {
+          "id": 3,
+          "bbox": [
+            [
+              0.0,
+              188.0
+            ],
+            [
+              64.0,
+              191.0
+            ],
+            [
+              61.0,
+              242.0
+            ],
+            [
+              0.0,
+              239.0
+            ]
+          ],
+          "text": "地",
+          "confidence": 0.9373,
+          "crop_path": "char_0003.png"
+        },
+        {
+          "id": 4,
+          "bbox": [
+            [
+              0.0,
+              221.0
+            ],
+            [
+              64.0,
+              221.0
+            ],
+            [
+              64.0,
+              273.0
+            ],
+            [
+              0.0,
+              273.0
+            ]
+          ],
+          "text": "理",
+          "confidence": 0.9951,
+          "crop_path": "char_0004.png"
+        },
+        {
+          "id": 5,
+          "bbox": [
+            [
+              0.0,
+              274.0
+            ],
+            [
+              60.0,
+              256.0
+            ],
+            [
+              67.0,
+              297.0
+            ],
+            [
+              6.0,
+              315.0
+            ]
+          ],
+          "text": "月脉",
+          "confidence": 0.6482,
+          "crop_path": "char_0005.png"
+        },
+        {
+          "id": 6,
+          "bbox": [
+            [
+              0.0,
+              299.0
+            ],
+            [
+              62.0,
+              293.0
+            ],
+            [
+              67.0,
+              359.0
+            ],
+            [
+              4.0,
+              365.0
+            ]
+          ],
+          "text": "泉",
+          "confidence": 0.992,
+          "crop_path": "char_0006.png"
+        },
+        {
+          "id": 7,
+          "bbox": [
+            [
+              4.0,
+              358.0
+            ],
+            [
+              62.0,
+              349.0
+            ],
+            [
+              67.0,
+              381.0
+            ],
+            [
+              8.0,
+              390.0
+            ]
+          ],
+          "text": "口",
+          "confidence": 0.9504,
+          "crop_path": "char_0007.png"
+        },
+        {
+          "id": 8,
+          "bbox": [
+            [
+              8.0,
+              386.0
+            ],
+            [
+              62.0,
+              393.0
+            ],
+            [
+              56.0,
+              438.0
+            ],
+            [
+              2.0,
+              430.0
+            ]
+          ],
+          "text": "院",
+          "confidence": 0.7111,
+          "crop_path": "char_0008.png"
+        },
+        {
+          "id": 9,
+          "bbox": [
+            [
+              5.0,
+              430.0
+            ],
+            [
+              63.0,
+              436.0
+            ],
+            [
+              59.0,
+              480.0
+            ],
+            [
+              1.0,
+              475.0
+            ]
+          ],
+          "text": "随",
+          "confidence": 0.9751,
+          "crop_path": "char_0009.png"
+        },
+        {
+          "id": 10,
+          "bbox": [
+            [
+              2.0,
+              477.0
+            ],
+            [
+              60.0,
+              469.0
+            ],
+            [
+              67.0,
+              515.0
+            ],
+            [
+              8.0,
+              523.0
+            ]
+          ],
+          "text": "時",
+          "confidence": 0.7409,
+          "crop_path": "char_0010.png"
+        },
+        {
+          "id": 11,
+          "bbox": [
+            [
+              9.0,
+              511.0
+            ],
+            [
+              63.0,
+              510.0
+            ],
+            [
+              63.0,
+              551.0
+            ],
+            [
+              10.0,
+              553.0
+            ]
+          ],
+          "text": "設",
+          "confidence": 0.7614,
+          "crop_path": "char_0011.png"
+        },
+        {
+          "id": 12,
+          "bbox": [
+            [
+              14.0,
+              553.0
+            ],
+            [
+              58.0,
+              553.0
+            ],
+            [
+              58.0,
+              585.0
+            ],
+            [
+              14.0,
+              585.0
+            ]
+          ],
+          "text": "B方",
+          "confidence": 0.7193,
+          "crop_path": "char_0012.png"
+        },
+        {
+          "id": 13,
+          "bbox": [
+            [
+              10.0,
+              586.0
+            ],
+            [
+              57.0,
+              585.0
+            ],
+            [
+              57.0,
+              625.0
+            ],
+            [
+              10.0,
+              626.0
+            ]
+          ],
+          "text": "退",
+          "confidence": 0.8221,
+          "crop_path": "char_0013.png"
+        },
+        {
+          "id": 14,
+          "bbox": [
+            [
+              5.0,
+              625.0
+            ],
+            [
+              61.0,
+              622.0
+            ],
+            [
+              64.0,
+              670.0
+            ],
+            [
+              8.0,
+              673.0
+            ]
+          ],
+          "text": "為",
+          "confidence": 0.797,
+          "crop_path": "char_0014.png"
+        },
+        {
+          "id": 15,
+          "bbox": [
+            [
+              17.0,
+              655.0
+            ],
+            [
+              64.0,
+              663.0
+            ],
+            [
+              55.0,
+              706.0
+            ],
+            [
+              9.0,
+              698.0
+            ]
+          ],
+          "text": "肉",
+          "confidence": 0.9874,
+          "crop_path": "char_0015.png"
+        }
+      ]
+    },
+    {
+      "image": "box_0009.png",
+      "folder": "pic2",
+      "image_size": {
+        "width": 47,
+        "height": 811
+      },
+      "total_chars": 0,
+      "elapsed_seconds": 7.804,
+      "avg_confidence": 0,
+      "boxes": []
+    },
+    {
+      "image": "box_0018.png",
+      "folder": "pic2",
+      "image_size": {
+        "width": 50,
+        "height": 820
+      },
+      "total_chars": 0,
+      "elapsed_seconds": 5.373,
+      "avg_confidence": 0,
+      "boxes": []
+    },
+    {
+      "image": "box_0037.png",
+      "folder": "pic2",
+      "image_size": {
+        "width": 55,
+        "height": 828
+      },
+      "total_chars": 0,
+      "elapsed_seconds": 6.882,
+      "avg_confidence": 0,
+      "boxes": []
+    },
+    {
+      "image": "box_0010.png",
+      "folder": "pic1",
+      "image_size": {
+        "width": 55,
+        "height": 156
+      },
+      "total_chars": 2,
+      "elapsed_seconds": 1.113,
+      "avg_confidence": 0.8974,
+      "boxes": [
+        {
+          "id": 0,
+          "bbox": [
+            [
+              0.0,
+              51.0
+            ],
+            [
+              42.0,
+              40.0
+            ],
+            [
+              54.0,
+              93.0
+            ],
+            [
+              5.0,
+              104.0
+            ]
+          ],
+          "text": "未",
+          "confidence": 0.8319,
+          "crop_path": "char_0000.png"
+        },
+        {
+          "id": 1,
+          "bbox": [
+            [
+              9.0,
+              99.0
+            ],
+            [
+              39.0,
+              100.0
+            ],
+            [
+              39.0,
+              147.0
+            ],
+            [
+              8.0,
+              146.0
+            ]
+          ],
+          "text": "至",
+          "confidence": 0.963,
+          "crop_path": "char_0001.png"
+        }
+      ]
+    },
+    {
+      "image": "box_0021.png",
+      "folder": "pic2",
+      "image_size": {
+        "width": 56,
+        "height": 818
+      },
+      "total_chars": 0,
+      "elapsed_seconds": 7.098,
+      "avg_confidence": 0,
+      "boxes": []
+    },
+    {
+      "image": "box_0007.png",
+      "folder": "pic1",
+      "image_size": {
+        "width": 73,
+        "height": 266
+      },
+      "total_chars": 2,
+      "elapsed_seconds": 1.524,
+      "avg_confidence": 0.9372,
+      "boxes": [
+        {
+          "id": 0,
+          "bbox": [
+            [
+              16.0,
+              95.0
+            ],
+            [
+              72.0,
+              103.0
+            ],
+            [
+              68.0,
+              163.0
+            ],
+            [
+              8.0,
+              155.0
+            ]
+          ],
+          "text": "為",
+          "confidence": 0.9934,
+          "crop_path": "char_0000.png"
+        },
+        {
+          "id": 1,
+          "bbox": [
+            [
+              0.0,
+              203.0
+            ],
+            [
+              63.0,
+              198.0
+            ],
+            [
+              68.0,
+              265.0
+            ],
+            [
+              5.0,
+              265.0
+            ]
+          ],
+          "text": "偉",
+          "confidence": 0.8811,
+          "crop_path": "char_0001.png"
+        }
+      ]
+    }
+  ]
+}
