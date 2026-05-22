@@ -630,12 +630,18 @@ hoveredId: string | null</code></pre>
 </div>
 
 <script>
+// Tab switching
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
     tab.classList.add('active');
-    document.getElementById(tab.dataset.tab).classList.add('active');
+    const section = document.getElementById(tab.dataset.tab);
+    section.classList.add('active');
+    section.style.display = 'block';
   });
 });
 </script>
