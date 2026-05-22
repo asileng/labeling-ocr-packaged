@@ -53,8 +53,20 @@
 
 <h3>方案 A: RapidOCR (return_word_box=True)</h3>
 <p><strong>状态</strong>: ✅ 已完成</p>
-<p><strong>输入</strong>: 行检测后的裁剪文字行图片 (HUNoutput/pic5_crops/pic5/box_0000.png, 61x833)</p>
+<p><strong>输入</strong>: 行检测后的裁剪文字行图片 (61x833)</p>
 <p><strong>输出</strong>: 单字级别bbox检测结果</p>
+
+<h4>原图 vs 检测结果对比</h4>
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+  <div>
+    <p><strong>原图</strong></p>
+    <img src="sandbox/task1/rapidocr_char/original.png" style="max-height: 400px; border: 1px solid #333;">
+  </div>
+  <div>
+    <p><strong>检测结果 (bbox叠加)</strong></p>
+    <img src="sandbox/task1/rapidocr_char/box_0000_bboxes_overlay.png" style="max-height: 400px; border: 1px solid #333;">
+  </div>
+</div>
 
 <h4>检测结果</h4>
 <table>
@@ -68,14 +80,29 @@
 </tbody>
 </table>
 
-<h4>可视化结果</h4>
-<p>检测到的bbox已绘制在原图上（红色边框 + 绿色文字标签）</p>
-<p>输出文件:</p>
-<ul>
-<li><code>sandbox/task1/rapidocr_char/box_0000_bboxes_overlay.png</code> - bbox叠加可视化</li>
-<li><code>sandbox/task1/rapidocr_char/box_0000_char_crops/</code> - 单字裁剪图</li>
-<li><code>sandbox/task1/rapidocr_char/box_0000_results.json</code> - 检测结果JSON</li>
-</ul>
+<h4>单字裁剪图</h4>
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <div style="text-align: center;">
+    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0000.png" style="height: 60px; border: 1px solid #333;">
+    <p>有</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0001.png" style="height: 60px; border: 1px solid #333;">
+    <p>此</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0002.png" style="height: 60px; border: 1px solid #333;">
+    <p>制</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0003.png" style="height: 60px; border: 1px solid #333;">
+    <p>城</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="sandbox/task1/rapidocr_char/box_0000_char_crops/char_0004.png" style="height: 60px; border: 1px solid #333;">
+    <p>威</p>
+  </div>
+</div>
 
 <h4>结论</h4>
 <p>RapidOCR的 <code>return_word_box=True</code> 参数可以实现单字级别检测，效果良好，推荐作为Task 1的最终方案。</p>
